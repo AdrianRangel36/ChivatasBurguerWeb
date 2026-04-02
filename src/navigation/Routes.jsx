@@ -1,15 +1,28 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from '../screens/Login';
-import Home from '../screens/Home';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Login from '../screens/login/index.jsx';
+import Home from '../screens/home/index.jsx';
+import RutaProtegida from '../navigation/rutaProtegida.jsx';
 
-export default function AppRoutes() {
+export default function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
+        {/* Ruta pública */}
         <Route path="/" element={<Login />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home />} />
+
+        {/* Ruta protegida */}
+        <Route 
+          path="/home" 
+          element={
+            <RutaProtegida>
+              <Home />
+            </RutaProtegida>
+          } 
+        />
+        
+        {/* Puedes proteger más rutas envolviéndolas igual */}
+        {/* <Route path="/configuracion" element={<ProtectedRoute><Configuracion /></ProtectedRoute>} /> */}
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }

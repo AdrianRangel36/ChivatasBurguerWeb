@@ -1,7 +1,8 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Login from '../screens/login/index.jsx';
-import Home from '../screens/home/index.jsx';
-import RutaProtegida from '../navigation/rutaProtegida.jsx';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "../screens/Login/index.jsx";
+import Home from "../screens/Home/index.jsx";
+import Ingredientes from "../screens/Ingredientes/index.jsx";
+import RutaProtegida from "./RutaProtegida.jsx";
 
 export default function App() {
   return (
@@ -10,16 +11,25 @@ export default function App() {
         {/* Ruta pública */}
         <Route path="/" element={<Login />} />
 
-        {/* Ruta protegida */}
-        <Route 
-          path="/home" 
+        {/* Rutas protegida */}
+        <Route
+          path="/home"
           element={
             <RutaProtegida>
               <Home />
             </RutaProtegida>
-          } 
+          }
         />
-        
+
+        <Route
+          path="/ingredientes"
+          element={
+            <RutaProtegida>
+              <Ingredientes />
+            </RutaProtegida>
+          }
+        />
+
         {/* Puedes proteger más rutas envolviéndolas igual */}
         {/* <Route path="/configuracion" element={<ProtectedRoute><Configuracion /></ProtectedRoute>} /> */}
       </Routes>

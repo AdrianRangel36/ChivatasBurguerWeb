@@ -10,7 +10,7 @@ export default function Login() {
 
   // 2. Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Esto es para que no se refresque la página de mrda
+    e.preventDefault(); // Esto es para que no se refresque la página 
 
     try {
       // 3. Hacer la petición POST al backend
@@ -19,6 +19,7 @@ export default function Login() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Permitir que se envíen y guarden las cookies
         body: JSON.stringify({ usuario, password }), // Los nombres coinciden con algo
       });
 

@@ -135,10 +135,10 @@ app.delete("/eliminar/:id", verificarSesion, (req, res) => {
 
 // Ruta para actualizar (Protegida)
 app.put("/actualizar/:id", verificarSesion, (req, res) => {
-  const { cantidad } = req.body;
+  const { nombre,cantidad,unidad } = req.body;
   const id = req.params.id;
-  const sql = "UPDATE ingredientes SET cantidad = ? WHERE id = ?";
-  db.query(sql, [cantidad, id], (err, result) => {
+  const sql = "UPDATE ingredientes SET nombre = ?, cantidad = ?, unidad = ?  WHERE id = ?";
+  db.query(sql, [nombre,cantidad,unidad, id], (err, result) => {
     if (err) return res.status(500).json(err);
     return res.json({ Status: "Success" });
   });

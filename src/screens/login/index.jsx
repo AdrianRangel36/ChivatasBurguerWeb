@@ -4,33 +4,49 @@ import { useNavigate } from "react-router-dom";
 export default function Login() {
   const navigate = useNavigate();
 
-  // 1. Estados para almacenar el usuario y la contraseña ingresados por el usuario
+  // Estados para almacenar el usuario y la contraseña ingresados
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
+  
+  // NUEVO: Estado para alternar entre Login (true) y Registro (false)
+  const [isLogin, setIsLogin] = useState(true);
 
-  // 2. Función para manejar el envío del formulario
+  // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Esto es para que no se refresque la página
+    e.preventDefault(); 
+
+    // Determinamos dinámicamente a qué ruta del backend hacer la petición
+    const endpoint = isLogin ? "http://localhost:8081/login" : "http://localhost:8081/signup";
 
     try {
-      // 3. Hacer la petición POST al backend
-      const respuesta = await fetch("http://localhost:8081/login", {
+      const respuesta = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // Permitir que se envíen y guarden las cookies
-        body: JSON.stringify({ usuario, password }), // Los nombres coinciden con algo
+        credentials: "include", 
+        body: JSON.stringify({ usuario, password }),
       });
 
-      const credenciales = await respuesta.json();
+      const data = await respuesta.json();
 
-      // 4. Evaluar la respuesta del servidor
-      if (credenciales.Status === "Success") {
-        localStorage.setItem("isAuthenticated", "true"); // Esto es para que se guarde la sesion en el navegador
-        navigate("/home"); // Redirige a la página principal si el login es correcto
+      if (isLogin) {
+        // LÓGICA DE INICIO DE SESIÓN
+        if (data.Status === "Success") {
+          localStorage.setItem("isAuthenticated", "true"); 
+          navigate("/home"); 
+        } else {
+          alert("Credenciales incorrectas. Intenta de nuevo.");
+        }
       } else {
-        alert("Credenciales incorrectas. Intenta de nuevo.");
+        // LÓGICA DE REGISTRO
+        if (data.Status === "Success") {
+          alert("Usuario creado con éxito. Por favor, inicia sesión.");
+          setIsLogin(true); // Cambiamos la vista de nuevo a "Iniciar sesión"
+          setPassword("");  // Limpiamos la contraseña por seguridad
+        } else {
+          alert(data.Message || "Hubo un error al registrar el usuario.");
+        }
       }
     } catch (err) {
       console.error("Error en la petición:", err);
@@ -54,9 +70,11 @@ export default function Login() {
           <h1 className="text-2xl lg:text-3xl text-white font-semibold">
             Bienvenido a Chivatas Burger
           </h1>
-          <h2 className="text-xl lg:text-2xl text-white font-semibold">
-            Ingresa tus credenciales
+          <h2 className="text-xl lg:text-2xl text-white font-semibold mt-2">
+            {/* El título cambia según el estado */}
+            {isLogin ? "Ingresa tus credenciales" : "Crea una nueva cuenta"}
           </h2>
+          
           <form onSubmit={handleSubmit} className="w-70 mt-5">
             <div className="grid grid-cols-2">
               <label htmlFor="username" className="text-lg lg:text-2xl font-semibold">
@@ -72,7 +90,7 @@ export default function Login() {
                 className="bg-white rounded-xl p-1 m-1"
               />
             </div>
-            <div className="grid grid-cols-2">
+            <div className="grid grid-cols-2 mt-2">
               <label htmlFor="password" className="text-lg lg:text-2xl font-semibold">
                 Contraseña:
               </label>
@@ -90,9 +108,21 @@ export default function Login() {
               type="submit"
               className="bg-black text-xl text-white font-bold p-2 w-full rounded-2xl mt-5"
             >
-              Iniciar sesión
+              {/* El texto del botón principal cambia según el estado */}
+              {isLogin ? "Iniciar sesión" : "Registrarse"}
             </button>
           </form>
+
+          {/* NUEVO: Botón para cambiar entre las vistas de Login y Sign up */}
+          <button
+            onClick={() => setIsLogin(!isLogin)}
+            className="mt-6 text-white font-semibold underline hover:text-gray-200 transition-colors"
+          >
+            {isLogin 
+              ? "¿No tienes cuenta? Regístrate aquí" 
+              : "¿Ya tienes cuenta? Inicia sesión"}
+          </button>
+
         </div>
       </div>
     </div>

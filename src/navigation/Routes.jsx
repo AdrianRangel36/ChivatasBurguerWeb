@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "../screens/Login/index.jsx";
+import Login from "../screens/login/index.jsx";
 import Home from "../screens/Home/index.jsx";
 import Ingredientes from "../screens/Ingredientes/index.jsx";
 import RutaProtegida from "./RutaProtegida.jsx";

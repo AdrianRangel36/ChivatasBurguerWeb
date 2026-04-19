@@ -82,6 +82,29 @@ app.post("/login", (req, res) => {
   });
 });
 
+// Ruta para registrar un nuevo usuario (Sign Up)
+app.post("/signup", (req, res) => {
+  const { usuario, password } = req.body;
+
+  // 1. Primero verificamos si el usuario ya existe en la base de datos
+  const checkSql = "SELECT * FROM usuarios WHERE usuario = ?";
+  db.query(checkSql, [usuario], (err, data) => {
+    if (err) return res.status(500).json({ Message: "Error en el servidor al verificar usuario" });
+    
+    if (data.length > 0) {
+      // Si el usuario existe, devolvemos un error
+      return res.status(400).json({ Status: "Fail", Message: "El nombre de usuario ya está en uso" });
+    } else {
+      // 2. Si no existe, lo insertamos en la tabla usuarios
+      const insertSql = "INSERT INTO usuarios (usuario, password) VALUES (?, ?)";
+      db.query(insertSql, [usuario, password], (err, result) => {
+        if (err) return res.status(500).json({ Message: "Error al registrar el usuario en la base de datos" });
+        return res.json({ Status: "Success", Message: "Usuario registrado con éxito" });
+      });
+    }
+  });
+});
+
 // 5. Ruta para cerrar sesión (Logout)
 app.get("/logout", (req, res) => {
   req.session.destroy();
